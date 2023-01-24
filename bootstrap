@@ -3,7 +3,7 @@
 PACKAGES="git zsh vim fzf python3-pip"
 
 echo "Check if I have access to my GitHub private repos..."
-ssh -T gite@github.com 1> /dev/null 2>& 1
+ssh -T git@github.com 1> /dev/null 2>& 1
 if [ $? -eq 0 ] ; then
 	echo "Connection established. We can move forward"
 else:
