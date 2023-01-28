@@ -92,6 +92,7 @@ git clone git@github.com:keedhost/vim.git ~/.vim
 git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 ln -sf ~/.vim/vimrc ~/.vimrc
 vim +'PlugInstall --sync' +qa
+vim +PluginInstall +qall
 
 echo "Installing zsh config"
 mv -v ~/.zsh ~/.zsh-$(date +%d-%m-%Y-at-%H-%m)
