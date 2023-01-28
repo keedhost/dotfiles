@@ -6,7 +6,7 @@ read -p "This script will remove your current settings for zhs and vim. Do it? (
 
 case $yn in 
 	yes ) echo "OK, we will proceed";;
-	no ) echo "Exiting...;
+	no ) echo "Exiting...";
 		exit 0;;
 	* ) echo "Only \"yes\" or \"no\" accepts";;
 esac
