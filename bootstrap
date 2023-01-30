@@ -50,7 +50,19 @@ install_packages () {
     		elif [ -f /etc/debian_version ]; then
             	Distro='Debian'
 	            echo "Found $Distro $OS."
-		    	sudo apt install -y $1
+			echo "Check that docker repo exists..."
+			[ ! -f /etc/apt/sources.list.d/docker.list ] || \
+				echo "Docker repo does not exists. Adding..."; \
+				sudo rm -v /etc/apt/keyrings/docker.gpg
+				echo \
+  					"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+  					$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+			sudo mkdir -p /etc/apt/keyrings && curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+			sudo chmod a+r /etc/apt/keyrings/docker.gpg
+			sudo apt update
+			sudo apt install -y $1
+			sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+			sudo usermod -aG docker $USER
     		fi
 	    	;;
 	  	'FreeBSD')
