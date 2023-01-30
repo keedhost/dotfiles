@@ -2,7 +2,7 @@
 
 ### By Andrii Kondratiev ###
 
-PACKAGES="git zsh vim fzf python3-pip"
+PACKAGES="git zsh vim fzf python3-pip neofetch"
 
 ### Ask before replace the configurations
 while true; do
@@ -63,6 +63,7 @@ install_packages () {
 			sudo apt install -y $1
 			sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 			sudo usermod -aG docker $USER
+			neofetch
     		fi
 	    	;;
 	  	'FreeBSD')
