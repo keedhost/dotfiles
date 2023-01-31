@@ -63,6 +63,8 @@ install_packages () {
 			sudo apt install -y $1
 			sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 			sudo usermod -aG docker $USER
+			mkdir -p ~/.local/share/fonts
+			cd ~/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
 			neofetch
     		fi
 	    	;;
@@ -81,6 +83,9 @@ install_packages () {
 	    	OS='macOS'
 	    	echo "Found $OS"
 	    	brew install $1
+		cd ~/Library/Fonts && \
+		curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" \
+			https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
 	    	;;
 	  	'SunOS')
 	    	OS='Solaris'
