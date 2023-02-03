@@ -62,7 +62,7 @@ function check_git_access {
 }
 
 check_git_access
-exit
+
 install_package () {
 	OS="`uname`"
 	case $OS in
