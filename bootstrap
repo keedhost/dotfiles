@@ -36,6 +36,53 @@ function NERD-fonts-install {
 	fi
 }
 
+function docker-install {
+	### Manual: https://computingforgeeks.com/install-docker-ce-on-linux-systems/
+	DOCKER_PACKAGES="docker-ce docker-ce-cli containerd.io docker-compose-plugin"
+	if [[ $OS = "Linux" ]]; then
+		sudo rm -v /etc/apt/keyrings/docker.gpg
+		sudo mkdir -p /etc/apt/keyrings && \
+		curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+		sudo chmod a+r /etc/apt/keyrings/docker.gpg
+	fi
+
+	if [[ $Distro = "Debian" ]]; then
+		### Script for Debian ###
+		info "Check that docker repo exists..."
+		[ ! -f /etc/apt/sources.list.d/docker.list ] && \
+			info "Docker repo does not exists. Adding..."; \
+			echo \
+  				"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+  				$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+			sudo apt update
+			sudo apt install -y \
+						lsb-release \
+						gnupg2 \
+						apt-transport-https \
+						ca-certificates \
+						curl \
+						software-properties-common
+			sudo apt install -y $DOCKER_PACKAGES
+	elif [[ $Distro = "RedHat" ]]; then
+		### Script for RedHat based linux distro ###
+		sudo dnf -y install dnf-plugins-core
+		sudo dnf config-manager --add-repo \
+				https://download.docker.com/linux/fedora/docker-ce.repo
+		sudo dnf -y install $DOCKER_PACKAGES
+	elif [[ $Distro = "SuSe" ]]; then
+		sles_version="$(. /etc/os-release && echo "${VERSION_ID##*.}")"
+		opensuse_repo="https://download.opensuse.org/repositories/security:SELinux/SLE_15_SP$sles_version/security:SELinux.repo"
+		sudo zypper addrepo $opensuse_repo
+		sudo zypper addrepo https://download.docker.com/linux/sles/docker-ce.repo
+ 		sudo zypper install $DOCKER_PACKAGES
+
+
+	fi
+	sudo systemctl start docker && sudo systemctl enable docker
+	sudo usermod -aG docker $USER
+	docker version
+}
+
 ### Ask before replace the configurations
 if [[ $1 = "--noask" ]]; then
     info "Runs in quiet mode"
@@ -86,27 +133,18 @@ function install_packages {
 	    	if [ -f /etc/redhat-release ]; then
                	Distro='RedHat'
 	           	info "Found $Distro $OS."
-		       	sudo dnf install -y $1
+	           	docker-install
+		       	sudo dnf install -y "$@"
     		elif [ -f /etc/SuSE-release ]; then
             	Distro='SuSe'
 	            info "Found $Distro $OS."
-		    	sudo yum install -y $1
+	            docker-install
+		    	sudo zypper install -y "$@"
     		elif [ -f /etc/debian_version ]; then
             	Distro='Debian'
 	            info "Found $Distro $OS."
-			info "Check that docker repo exists..."
-			[ ! -f /etc/apt/sources.list.d/docker.list ] || \
-				info "Docker repo does not exists. Adding..."; \
-				sudo rm -v /etc/apt/keyrings/docker.gpg
-				echo \
-  					"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-  					$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-			sudo mkdir -p /etc/apt/keyrings && curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-			sudo chmod a+r /etc/apt/keyrings/docker.gpg
-			sudo apt update
-			sudo apt install -y $1
-			sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
-			sudo usermod -aG docker $USER
+	            sudo apt install -y "$@"
+				docker-install
 			neofetch
     		fi
 	    	;;
@@ -124,7 +162,7 @@ function install_packages {
 	  	'Darwin') 
 	    	OS='macOS'
 	    	info "Found $OS"
-	    	brew install $1
+	    	brew install "$@"
 			NERD-fonts-install
 	    	;;
 	  	'SunOS')
