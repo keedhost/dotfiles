@@ -2,7 +2,7 @@
 
 ### By Andrii Kondratiev ###
 
-PACKAGES="git zsh vim fzf python3-pip neofetch"
+PACKAGES="git zsh vim fzf python3-pip tshark tcpdump wireshark neofetch"
 
 ### Ask before replace the configurations
 while true; do
