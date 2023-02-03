@@ -5,7 +5,7 @@
 PACKAGES="git zsh vim fzf python3-pip tshark tcpdump wireshark neofetch"
 
 ### Ask before replace the configurations
-if [ $0 == "--noask" ]; then
+if [[ $1 = "--noask" ]]; then
 	echo "Runs in quiet mode"
 else
 	while true; do
