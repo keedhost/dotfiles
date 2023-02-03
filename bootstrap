@@ -138,8 +138,14 @@ rm -Rfv ~/.vim
 git clone ${git_url}/vim.git ~/.vim
 git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 ln -sf ~/.vim/vimrc ~/.vimrc
-vim +'PlugInstall --sync' +qa
-vim +PluginInstall +qall
+
+# Install vim plugins from terminal
+# vim +'PlugInstall --sync' +qa
+# vim +PluginInstall +qall
+
+# Install vim plugins from CI
+vim -E -s -u "$HOME/.vimrc" +PluginInstall +qall
+vim -E -s -u "$HOME/.vimrc" "PlugInstall --sync" +qa
 
 info "Installing zsh config"
 mv -v ~/.zsh ~/.zsh-$(date +%d-%m-%Y-at-%H-%m)
