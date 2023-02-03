@@ -4,37 +4,55 @@
 
 PACKAGES="git zsh vim fzf python3-pip tshark tcpdump wireshark neofetch"
 
+# Colors
+end="\033[0m"
+red="\033[0;31m"
+green="\033[0;32m"
+yellow="\033[0;33m"
+
+function info {
+    echo -e "${green}=== ${1} === ${end}"
+}
+
+function error {
+    echo -e "${red}=== ${1} === ${end}"
+}
+
+function warn {
+    echo -e "${yellow}=== ${1} === ${end}"
+}
+
 ### Ask before replace the configurations
 if [[ $1 = "--noask" ]]; then
-	echo "Runs in quiet mode"
+    info "Runs in quiet mode"
 else
 	while true; do
 	    read -p "This script will remove your current settings for zhs and vim. Do it? (yes/no) " yn
 	    case $yn in 
-		yes ) echo "OK, we will proceed";
+		yes ) info "OK, we will proceed";
 		break;;
-		no ) echo "Exiting...";
+		no ) info "Exiting...";
 			exit 0;;
-		* ) echo "Only \"yes\" or \"no\" accepts";;
+		* ) info "Only \"yes\" or \"no\" accepts";;
 	    esac
 	done
 fi
 
-echo "Check if I have access to my GitHub private repos..."
+info "Check if I have access to my GitHub private repos..."
 ssh -T git@github.com 1> /dev/null 2>& 1
 if [ $? -eq 0 ] ; then
-	echo "Connection established. We can move forward"
+	info "Connection established. We can move forward"
 else:
-	echo "Coul'd not connect to the GitHub private repos."
-	echo "Possible solutions:"
-	echo "1. Check internet connections"
-	echo "2. Check that SSH keys installed"
-	echo "3. Check SSH keys permissions:"
-	echo -e "\t chown -R $USER. ~/.ssh"
-	echo -e"\t chmod 700 ~/.ssh"
-	echo -e"\t chmod 600 ~/.ssh/*"
-	echo -e"\t chmod 644 ~/.ssh/*.pub"
-	echo "---------------------------------"
+	warn "Coul'd not connect to the GitHub private repos."
+	info "Possible solutions:"
+	info "1. Check internet connections"
+	info "2. Check that SSH keys installed"
+	info "3. Check SSH keys permissions:"
+	info "\t chown -R $USER. ~/.ssh"
+	info "\t chmod 700 ~/.ssh"
+	info "\t chmod 600 ~/.ssh/*"
+	info "\t chmod 644 ~/.ssh/*.pub"
+	info "---------------------------------"
 	exit 4
 fi
 
@@ -45,18 +63,18 @@ install_packages () {
 	    	OS='Linux'
 	    	if [ -f /etc/redhat-release ]; then
                	Distro='RedHat'
-	           	echo "Found $Distro $OS."
+	           	info "Found $Distro $OS."
 		       	sudo dnf install -y $1
     		elif [ -f /etc/SuSE-release ]; then
             	Distro='SuSe'
-	            echo "Found $Distro $OS."
+	            info "Found $Distro $OS."
 		    	sudo yum install -y $1
     		elif [ -f /etc/debian_version ]; then
             	Distro='Debian'
-	            echo "Found $Distro $OS."
-			echo "Check that docker repo exists..."
+	            info "Found $Distro $OS."
+			info "Check that docker repo exists..."
 			[ ! -f /etc/apt/sources.list.d/docker.list ] || \
-				echo "Docker repo does not exists. Adding..."; \
+				info "Docker repo does not exists. Adding..."; \
 				sudo rm -v /etc/apt/keyrings/docker.gpg
 				echo \
   					"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
@@ -74,18 +92,18 @@ install_packages () {
 	    	;;
 	  	'FreeBSD')
 	    	OS='FreeBSD'
-	    	echo "Found $OS"
+	    	info "Found $OS"
 	    	su -c "pkg install $1"
 	    	;;
 	  	'WindowsNT')
 	    	OS='Windows'
-	    	echo "Found $OS"
-	    	echo "Currently not supported by script"
+	    	warn "Found $OS"
+	    	error "Currently not supported by script"
 	    	exit 2
 	    	;;
 	  	'Darwin') 
 	    	OS='macOS'
-	    	echo "Found $OS"
+	    	info "Found $OS"
 	    	brew install $1
 		cd ~/Library/Fonts && \
 		curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" \
@@ -93,12 +111,12 @@ install_packages () {
 	    	;;
 	  	'SunOS')
 	    	OS='Solaris'
-	    	echo "Found $OS"
-	    	echo "Currently not supported by script"
+	    	warn "Found $OS"
+	    	error "Currently not supported by script"
 	    	exit 2
 	    ;;
 	  	*)
-			echo "Unknown operation system. Exiting..."
+			error "Unknown operation system. Exiting..."
 			exit 3
 		;;
 	esac
@@ -106,8 +124,8 @@ install_packages () {
 
 install_packages $PACKAGES
 
-echo "Start installing config files"
-echo "Installing vim config"
+info "Start installing config files"
+info "Installing vim config"
 mv -v ~/.vim ~/.vim-$(date +%d-%m-%Y-at-%H-%m)
 rm -Rfv ~/.vim
 git clone git@github.com:keedhost/vim.git ~/.vim
@@ -116,7 +134,7 @@ ln -sf ~/.vim/vimrc ~/.vimrc
 vim +'PlugInstall --sync' +qa
 vim +PluginInstall +qall
 
-echo "Installing zsh config"
+info "Installing zsh config"
 mv -v ~/.zsh ~/.zsh-$(date +%d-%m-%Y-at-%H-%m)
 git clone --recurse-submodules git@github.com:keedhost/zsh.git ~/.zsh --recursive --progress  --remote
 ln -sf ~/.zsh/zshrc ~/.zshrc
