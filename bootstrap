@@ -22,6 +22,20 @@ function warn {
     echo -e "${yellow}=== ${1} === ${end}"
 }
 
+function NERD-fonts-install {
+	FONT_URL="https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf"
+	if [[ $OS = "Linux" ]]; then
+		[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
+		cd ~/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" ${FONT_URL}
+	elif [[ $OS = "macOS" ]]; then
+		[ ! -d ~/Library/Fonts ] && mkdir -p ~/Library/Fonts
+		cd ~/Library/Fonts && \
+		curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" ${FONT_URL}
+	else
+		warn "$OS does not supported for now. NERD font will not be installed"
+	fi
+}
+
 ### Ask before replace the configurations
 if [[ $1 = "--noask" ]]; then
     info "Runs in quiet mode"
@@ -68,6 +82,7 @@ function install_packages {
 	case $OS in
 	  	'Linux')
 	    	OS='Linux'
+	    	NERD-fonts-install
 	    	if [ -f /etc/redhat-release ]; then
                	Distro='RedHat'
 	           	info "Found $Distro $OS."
@@ -92,8 +107,6 @@ function install_packages {
 			sudo apt install -y $1
 			sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 			sudo usermod -aG docker $USER
-			mkdir -p ~/.local/share/fonts
-			cd ~/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
 			neofetch
     		fi
 	    	;;
@@ -112,9 +125,7 @@ function install_packages {
 	    	OS='macOS'
 	    	info "Found $OS"
 	    	brew install $1
-		cd ~/Library/Fonts && \
-		curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" \
-			https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
+			NERD-fonts-install
 	    	;;
 	  	'SunOS')
 	    	OS='Solaris'
