@@ -63,7 +63,7 @@ function check_git_access {
 
 check_git_access
 
-install_package () {
+function install_packages {
 	OS="`uname`"
 	case $OS in
 	  	'Linux')
