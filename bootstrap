@@ -38,25 +38,32 @@ else
 	done
 fi
 
-info "Check if I have access to my GitHub private repos..."
-ssh -T git@github.com 1> /dev/null 2>& 1
-if [ $? -eq 0 ] ; then
-	info "Connection established. We can move forward"
-else:
-	warn "Coul'd not connect to the GitHub private repos."
-	info "Possible solutions:"
-	info "1. Check internet connections"
-	info "2. Check that SSH keys installed"
-	info "3. Check SSH keys permissions:"
-	info "\t chown -R $USER. ~/.ssh"
-	info "\t chmod 700 ~/.ssh"
-	info "\t chmod 600 ~/.ssh/*"
-	info "\t chmod 644 ~/.ssh/*.pub"
-	info "---------------------------------"
-	exit 4
-fi
+function check_git_access {
+    info "Check if I have access to my GitHub private repos..."
+    ssh -q git@github.com 1> /dev/null 2>& 1
+    if [ $? -eq 1 ] ; then
+	    info "SSH connection to git established"
+        info "Using \"git@github.com:keedhost\" as url"
+        git_url="git@github.com:keedhost"
+    else
+	    warn "Coul'd not connect to the GitHub private repos."
+	    info "Possible solutions:"
+	    info "1. Check internet connections"
+	    info "2. Check that SSH keys installed"
+	    info "3. Check SSH keys permissions:"
+    	info "\t chown -R $USER. ~/.ssh"
+	    info "\t chmod 700 ~/.ssh"
+    	info "\t chmod 600 ~/.ssh/*"
+	    info "\t chmod 644 ~/.ssh/*.pub"
+	    info "---------------------------------"
+        info "Using \"https://github.com/keedhost\" as url"
+        git_url="https://github.com/keedhost"
+    fi
+}
 
-install_packages () {
+check_git_access
+exit
+install_package () {
 	OS="`uname`"
 	case $OS in
 	  	'Linux')
@@ -128,7 +135,7 @@ info "Start installing config files"
 info "Installing vim config"
 mv -v ~/.vim ~/.vim-$(date +%d-%m-%Y-at-%H-%m)
 rm -Rfv ~/.vim
-git clone git@github.com:keedhost/vim.git ~/.vim
+git clone ${git_url}/vim.git ~/.vim
 git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 ln -sf ~/.vim/vimrc ~/.vimrc
 vim +'PlugInstall --sync' +qa
@@ -136,6 +143,6 @@ vim +PluginInstall +qall
 
 info "Installing zsh config"
 mv -v ~/.zsh ~/.zsh-$(date +%d-%m-%Y-at-%H-%m)
-git clone --recurse-submodules git@github.com:keedhost/zsh.git ~/.zsh --recursive --progress  --remote
+git clone --recurse-submodules ${git_url}/zsh.git ~/.zsh --recursive --progress  --remote
 ln -sf ~/.zsh/zshrc ~/.zshrc
 python3 -m pip install thefuck
