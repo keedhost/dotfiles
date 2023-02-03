@@ -5,16 +5,20 @@
 PACKAGES="git zsh vim fzf python3-pip tshark tcpdump wireshark neofetch"
 
 ### Ask before replace the configurations
-while true; do
-    read -p "This script will remove your current settings for zhs and vim. Do it? (yes/no) " yn
-    case $yn in 
-	yes ) echo "OK, we will proceed";
-	break;;
-	no ) echo "Exiting...";
-		exit 0;;
-	* ) echo "Only \"yes\" or \"no\" accepts";;
-    esac
-done
+if [ $0 == "--noask" ]; then
+	echo "Runs in quiet mode"
+else
+	while true; do
+	    read -p "This script will remove your current settings for zhs and vim. Do it? (yes/no) " yn
+	    case $yn in 
+		yes ) echo "OK, we will proceed";
+		break;;
+		no ) echo "Exiting...";
+			exit 0;;
+		* ) echo "Only \"yes\" or \"no\" accepts";;
+	    esac
+	done
+fi
 
 echo "Check if I have access to my GitHub private repos..."
 ssh -T git@github.com 1> /dev/null 2>& 1
