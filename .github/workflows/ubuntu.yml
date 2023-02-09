@@ -2,16 +2,15 @@ on: push
 name: Check that system config applies
 jobs:
   main_job:
-    name: Config validation
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install configs
+    runs-on: ${{ matrix.os }}
+    
+  steps:
+    - name: Install configs
+      uses: actions/checkout@v3
       run: |
         git clone https://github.com/keedhost/dotfiles.git
         cd dotfiles
         bash bootstrap --noask
-
