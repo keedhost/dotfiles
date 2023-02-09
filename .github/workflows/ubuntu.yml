@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  main:
+  main_job:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
