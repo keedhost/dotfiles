@@ -202,7 +202,7 @@ git clone --recurse-submodules ${git_url}/zsh.git ~/.zsh --recursive --progress 
 ln -sf ~/.zsh/zshrc ~/.zshrc
 python3 -m pip install thefuck
 
-info "Install NVIM config:
+info "Install NVIM config"
 git clone ${git_url}/nvim.git ~/.config/nvim
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.config/nvim/bundle/Vundle.vim
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
