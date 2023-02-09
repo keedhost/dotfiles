@@ -6,10 +6,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}   
-  steps:
-    - name: Install configs
-    - uses: actions/checkout@v3
-    run: |
-      git clone https://github.com/keedhost/dotfiles.git
-      cd dotfiles
-      bash bootstrap --noask
+    steps:
+      - name: Install configs
+      - uses: actions/checkout@v3
+        run: |
+          git clone https://github.com/keedhost/dotfiles.git
+          bash dotfiles/bootstrap --noask
