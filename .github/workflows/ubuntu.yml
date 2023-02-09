@@ -10,7 +10,7 @@ jobs:
   steps:
     - name: Install configs
     - uses: actions/checkout@v3
-      run: |
-        git clone https://github.com/keedhost/dotfiles.git
-        cd dotfiles
-        bash bootstrap --noask
+    run: |
+      git clone https://github.com/keedhost/dotfiles.git
+      cd dotfiles
+      bash bootstrap --noask
