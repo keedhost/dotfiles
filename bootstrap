@@ -22,14 +22,19 @@ function warn {
     echo -e "${yellow}=== ${1} === ${end}"
 }
 
+function create_dir {
+		[ ! -d $1 ] && mkdir -p $1
+}
 function NERD-fonts-install {
 	FONT_URL="https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf"
 	if [[ $OS = "Linux" ]]; then
-		[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
-		cd ~/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" ${FONT_URL}
+		create_dir "$HOME/.local/share/fonts"
+		# [ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
+		cd $HOME/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" ${FONT_URL}
 	elif [[ $OS = "macOS" ]]; then
-		[ ! -d ~/Library/Fonts ] && mkdir -p ~/Library/Fonts
-		cd ~/Library/Fonts && \
+		create_dir "$HOME/Library/Fonts"
+		# [ ! -d ~/Library/Fonts ] && mkdir -p ~/Library/Fonts
+		cd $HOME/Library/Fonts && \
 		curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" ${FONT_URL}
 	else
 		warn "$OS does not supported for now. NERD font will not be installed"
@@ -100,6 +105,8 @@ else
 fi
 
 function check_git_access {
+	create_dir "$HOME/.ssh/" && chmod -v 700 ~/.ssh/
+	ssh-keyscan github.com >> $HOME/.ssh/known_hosts
     info "Check if I have access to my GitHub private repos..."
     ssh -q git@github.com 1> /dev/null 2>& 1
     if [ $? -eq 1 ] ; then
@@ -143,7 +150,8 @@ function install_packages {
     		elif [ -f /etc/debian_version ]; then
             	Distro='Debian'
 	            info "Found $Distro $OS."
-	            sudo apt install -y "$@"
+	            echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
+	            sudo apt install -y --force-yes --allow-change-held-packages "$@"
 				docker-install
 			neofetch
     		fi
@@ -182,11 +190,10 @@ install_packages $PACKAGES
 
 info "Start installing config files"
 info "Installing vim config"
-mv -v ~/.vim ~/.vim-$(date +%d-%m-%Y-at-%H-%m)
-rm -Rfv ~/.vim
-git clone ${git_url}/vim.git ~/.vim
-git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-ln -sf ~/.vim/vimrc ~/.vimrc
+[ -d "$HOME/.vim" ] && mv -v $HOME/.vim $HOME/.vim-$(date +%d-%m-%Y-at-%H-%m)
+git clone ${git_url}/vim.git $HOME/.vim
+git clone https://github.com/gmarik/Vundle.vim.git $HOME/.vim/bundle/Vundle.vim
+ln -sfv ~/.vim/vimrc ~/.vimrc
 
 # Install vim plugins from terminal
 # vim +'PlugInstall --sync' +qa
@@ -197,9 +204,18 @@ vim -E -s -u "$HOME/.vimrc" +PluginInstall +qall
 vim -E -s -u "$HOME/.vimrc" "PlugInstall --sync" +qa
 
 info "Installing zsh config"
-mv -v ~/.zsh ~/.zsh-$(date +%d-%m-%Y-at-%H-%m)
-git clone --recurse-submodules ${git_url}/zsh.git ~/.zsh --recursive --progress  --remote
-ln -sf ~/.zsh/zshrc ~/.zshrc
+[ -d "$HOME/.zsh" ] && mv -v ~/.zsh ~/.zsh-$(date +%d-%m-%Y-at-%H-%m)
+if [[ $git_url = "https://github.com/keedhost" ]]; then
+	info "Switch git modules url to http if not possible to connect via ssh"
+	git clone ${git_url}/zsh.git ~/.zsh
+	sed -i 's/git@github.com:/https:\/\/github.com\//g' $HOME/.zsh/.gitmodules
+	info "Gitmodules URL changed to HTTP"
+	git -C $HOME/.zsh/oh-my-zsh submodule update --init --recursive --progress  --remote
+else
+	git clone --recurse-submodules ${git_url}/zsh.git ~/.zsh --recursive --progress  --remote
+fi
+ln -sf $HOME/.zsh/zshrc $HOME/.zshrc
+chsh -s $(which zsh)
 python3 -m pip install thefuck
 
 info "Install NVIM config"
@@ -208,6 +224,6 @@ git clone https://github.com/VundleVim/Vundle.vim.git ~/.config/nvim/bundle/Vund
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 git clone --depth 1 https://github.com/wbthomason/packer.nvim \
-       ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+       $HOME/.local/share/nvim/site/pack/packer/start/packer.nvim
 nvim --headless +'PlugInstall --sync' +qa
-nvim  --headless +PluginInstall +qall
+nvim --headless +PluginInstall +qall
