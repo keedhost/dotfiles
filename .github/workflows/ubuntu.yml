@@ -1,4 +1,5 @@
 on: push
+name: Check that system config applies
 jobs:
   main_job:
     name: Config validation
@@ -7,10 +8,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v3
-      - name: Install configs
-      run: |
-        git clone https://github.com/keedhost/dotfiles.git
-        cd dotfiles
-        bash bootstrap --noask
+    - uses: actions/checkout@v3
+    - name: Install configs
+    run: |
+      git clone https://github.com/keedhost/dotfiles.git
+      cd dotfiles
+      bash bootstrap --noask
 
