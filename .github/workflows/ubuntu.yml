@@ -9,24 +9,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  Run-on-ubuntu:
-    name: Run on Ubuntu latest
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - name: Clone repo
-          run: |
-            git clone https://github.com/keedhost/dotfiles.git
-            cd dotfiles
-            bash bootstrap --noask
+  main:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+     steps:
+      - uses: actions/checkout@v3
+      - name: Run main test
+      run: |
+        git clone https://github.com/keedhost/dotfiles.git
+        cd dotfiles
+        bash bootstrap --noask
 
-  Run-on-macOS:
-    name: Run on masOS latest
-      runs-on: macos-latest
-      steps:
-        - uses: actions/checkout@v3
-        - name: Clone repo
-          run: |
-            git clone https://github.com/keedhost/dotfiles.git
-            cd dotfiles
-            bash bootstrap --noask
