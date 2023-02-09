@@ -2,7 +2,7 @@
 
 ### By Andrii Kondratiev ###
 
-PACKAGES="git zsh vim fzf python3-pip tshark tcpdump wireshark neofetch"
+PACKAGES="git zsh vim fzf python3-pip tshark tcpdump wireshark neovim neofetch"
 
 # Colors
 end="\033[0m"
@@ -201,3 +201,13 @@ mv -v ~/.zsh ~/.zsh-$(date +%d-%m-%Y-at-%H-%m)
 git clone --recurse-submodules ${git_url}/zsh.git ~/.zsh --recursive --progress  --remote
 ln -sf ~/.zsh/zshrc ~/.zshrc
 python3 -m pip install thefuck
+
+### Install NVIM
+git clone git@github.com:keedhost/nvim.git ~/.config/nvim
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.config/nvim/bundle/Vundle.vim
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+git clone --depth 1 https://github.com/wbthomason/packer.nvim \
+       ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+nvim --headless +PlugInstall +qa
+nvim  --headless +PluginInstall +qall
