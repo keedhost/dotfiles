@@ -2,8 +2,8 @@
 
 ### By Andrii Kondratiev ###
 
-COMMON_PACKAGES="git zsh vim fzf curl wget tcpdump wireshark minicom neovim"
-LINUX_PACKAGES="python3-pip neofetch mc"
+COMMON_PACKAGES="git zsh vim fzf curl wget tcpdump wireshark minicom neovim neofetch"
+LINUX_PACKAGES="python3-pip mc"
 BREW_PACKAGES="midnight-commander ipython bpython"
 PYTHON_PACKAGES="thefuck ipython bpython"
 
@@ -46,7 +46,6 @@ function NERD-fonts-install {
 function docker-install {
 	### Manual: https://computingforgeeks.com/install-docker-ce-on-linux-systems/
 	DOCKER_PACKAGES="docker-ce docker-ce-cli containerd.io docker-compose-plugin"
-	echo "108.138.51.60 	download.docker.com" | sudo tee -a /etc/hosts
 	if [[ $OS = "Linux" ]]; then
 		sudo rm -v /etc/apt/keyrings/docker.gpg
 		sudo mkdir -p /etc/apt/keyrings && \
