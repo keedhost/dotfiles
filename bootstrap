@@ -2,7 +2,10 @@
 
 ### By Andrii Kondratiev ###
 
-PACKAGES="git zsh vim fzf python3-pip tshark tcpdump wireshark neovim neofetch"
+COMMON_PACKAGES="git zsh vim fzf curl wget tcpdump wireshark minicom neovim"
+LINUX_PACKAGES="python3-pip neofetch mc"
+BREW_PACKAGES="midnight-commander ipython bpython"
+PYTHON_PACKAGES="thefuck ipython bpython"
 
 # Colors
 end="\033[0m"
@@ -33,7 +36,6 @@ function NERD-fonts-install {
 		cd $HOME/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" ${FONT_URL}
 	elif [[ $OS = "macOS" ]]; then
 		create_dir "$HOME/Library/Fonts"
-		# [ ! -d ~/Library/Fonts ] && mkdir -p ~/Library/Fonts
 		cd $HOME/Library/Fonts && \
 		curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" ${FONT_URL}
 	else
@@ -141,17 +143,17 @@ function install_packages {
                	Distro='RedHat'
 	           	info "Found $Distro $OS."
 	           	docker-install
-		       	sudo dnf install -y "$@"
+		       	sudo dnf install -y $COMMON_PACKAGES $LINUX_PACKAGES
     		elif [ -f /etc/SuSE-release ]; then
             	Distro='SuSe'
 	            info "Found $Distro $OS."
 	            docker-install
-		    	sudo zypper install -y "$@"
+		    	sudo zypper install -y $COMMON_PACKAGES $LINUX_PACKAGES
     		elif [ -f /etc/debian_version ]; then
             	Distro='Debian'
 	            info "Found $Distro $OS."
 	            echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
-	            sudo apt install -y --force-yes --allow-change-held-packages "$@"
+	            sudo apt install -y --force-yes --allow-change-held-packages $COMMON_PACKAGES $LINUX_PACKAGES
 				docker-install
 			neofetch
     		fi
@@ -170,7 +172,8 @@ function install_packages {
 	  	'Darwin') 
 	    	OS='macOS'
 	    	info "Found $OS"
-	    	brew install "$@"
+	    	info "Installing brew packages"
+			brew install $COMMON_PACKAGES $BREW_PACKAGES
 			NERD-fonts-install
 	    	;;
 	  	'SunOS')
@@ -186,7 +189,7 @@ function install_packages {
 	esac
 }
 
-install_packages $PACKAGES
+install_packages
 
 info "Start installing config files"
 info "Installing vim config"
