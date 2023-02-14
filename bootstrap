@@ -134,7 +134,7 @@ function check_git_access {
 check_git_access
 
 function install_packages {
-	uname
+	uname -a
 	OS="`uname`"
 	case $OS in
 	  	'Linux')
@@ -176,6 +176,7 @@ function install_packages {
 	    	info "Installing brew packages"
 			brew install $COMMON_PACKAGES $BREW_PACKAGES
 			NERD-fonts-install
+			neofetch
 	    	;;
 	  	'SunOS')
 	    	OS='Solaris'
