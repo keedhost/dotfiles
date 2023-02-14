@@ -134,6 +134,7 @@ function check_git_access {
 check_git_access
 
 function install_packages {
+	uname -a
 	OS="`uname`"
 	case $OS in
 	  	'Linux')
@@ -211,7 +212,7 @@ info "Installing zsh config"
 if [[ $git_url = "https://github.com/keedhost" ]]; then
 	info "Switch git modules url to http if not possible to connect via ssh"
 	git clone ${git_url}/zsh.git ~/.zsh
-	sed -i 's/git@github.com:/https:\/\/github.com\//g' $HOME/.zsh/.gitmodules
+	sed -i 's/git@github.com:/https:\/\/github.com\//g' "$HOME/.zsh/.gitmodules"
 	info "Gitmodules URL changed to HTTP"
 	git -C $HOME/.zsh/oh-my-zsh submodule update --init --recursive --progress  --remote
 else
@@ -219,7 +220,7 @@ else
 fi
 ln -sf $HOME/.zsh/zshrc $HOME/.zshrc
 chsh -s $(which zsh)
-python3 -m pip install thefuck
+python3 -m pip install $PYTHON_PACKAGES
 
 info "Install NVIM config"
 git clone ${git_url}/nvim.git ~/.config/nvim
