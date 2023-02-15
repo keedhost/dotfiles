@@ -2,6 +2,8 @@ on: push
 name: Check that system config applies
 jobs:
   main_job:
+    env:
+      GITHUB_CI: true
     strategy:
       matrix:
         os: [ubuntu-latest,macos-latest]

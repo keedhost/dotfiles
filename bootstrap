@@ -190,6 +190,8 @@ function install_packages {
 		;;
 	esac
 }
+env
+exit 1488
 
 install_packages
 
