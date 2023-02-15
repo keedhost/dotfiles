@@ -1,9 +1,27 @@
 on: push
 name: Check that system config applies
 jobs:
+  git_clone:
+    strategy:
+      matrix:
+        os: [ubuntu-latest,macos-latest]
+    runs-on: ${{ matrix.os }}   
+    steps:
+      - name: Clone ZSH configs
+        uses: actions/checkout@v3
+        with:
+          repository: keedhost/zsh
+          path: .zsh
+
+      - name: Clone vim configs
+        uses: actions/checkout@v3
+        with:
+          repository: keedhost/vim
+          path: .vim
+
   main_job:
     env:
-      GITHUB_CI: true
+      IF_CI: true
     strategy:
       matrix:
         os: [ubuntu-latest,macos-latest]
