@@ -145,7 +145,7 @@ function install_packages {
 	           	info "Found $Distro $OS."
 	           	docker-install
 		       	sudo dnf install -y $COMMON_PACKAGES $LINUX_PACKAGES
-    		elif [ -f /etc/SuSE-release ]; then
+    		elif [ grep -q "openSUSE Tumbleweed" /etc/issue ]; then
             	Distro='SuSe'
 	            info "Found $Distro $OS."
 	            docker-install
