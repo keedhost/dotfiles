@@ -137,40 +137,39 @@ function check_git_access {
 check_git_access
 
 function install_packages {
-if [[ $OS = "Linux" ]]; then
-	info "Found $DISTRO $OS."
-	NERD-fonts-install
-	docker-install
-
-	if [[ $DISTRO = "RedHat" ]]; then
-		sudo dnf install -y $COMMON_PACKAGES $LINUX_PACKAGES
-    	elif [[ $DISTRO = "openSUSE" ]]; then
-	        sudo zypper install -y $COMMON_PACKAGES $LINUX_PACKAGES
-    	elif [[ $DISTRO = "Debian" ]]; then
-	        echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
-	        sudo apt install -y --force-yes --allow-change-held-packages $COMMON_PACKAGES $LINUX_PACKAGES
-    	fi
-elif [[ $OS = "FreeBSD" ]]; then
-	info "Found $OS"
-	su -c "pkg install $1"
-elif [[ $OS = "WindowsNT" ]]; then
-	warn "Found Windows"
-	error "Currently not supported by script"
-	exit 2
-elif [[ $OS = "Darwin" ]]; then
-	info "Found macOS"
-	info "Installing brew packages"
-	brew install $COMMON_PACKAGES $BREW_PACKAGES
-elif [[ $OS = "SunOS" ]]; then
-	warn "Found Solaris"
-	error "Currently not supported by script"
-	exit 2
-else
-	error "Unknown operation system. Exiting..."
-	exit 3
+	if [[ $OS = "Linux" ]]; then
+		info "Found $DISTRO $OS."
+		NERD-fonts-install
+		docker-install
+	
+		if [[ $DISTRO = "RedHat" ]]; then
+			sudo dnf install -y $COMMON_PACKAGES $LINUX_PACKAGES
+	    	elif [[ $DISTRO = "openSUSE" ]]; then
+		        sudo zypper install -y $COMMON_PACKAGES $LINUX_PACKAGES
+	    	elif [[ $DISTRO = "Debian" ]]; then
+		        echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
+		        sudo apt install -y --force-yes --allow-change-held-packages $COMMON_PACKAGES $LINUX_PACKAGES
+	    	fi
+	elif [[ $OS = "FreeBSD" ]]; then
+		info "Found $OS"
+		su -c "pkg install $1"
+	elif [[ $OS = "WindowsNT" ]]; then
+		warn "Found Windows"
+		error "Currently not supported by script"
+		exit 2
+	elif [[ $OS = "Darwin" ]]; then
+		info "Found macOS"
+		info "Installing brew packages"
+		brew install $COMMON_PACKAGES $BREW_PACKAGES
+	elif [[ $OS = "SunOS" ]]; then
+		warn "Found Solaris"
+		error "Currently not supported by script"
+		exit 2
+	else
+		error "Unknown operation system. Exiting..."
+		exit 3
+	fi
 }
-env
-exit 1488
 
 install_packages
 
