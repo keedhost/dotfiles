@@ -17,3 +17,5 @@ bash <(curl -s https://raw.githubusercontent.com/keedhost/dotfiles/master/bootst
 - [**aria2**](https://github.com/aria2/aria2) (improoved console file downloader, `wget` and `curl` alternative)
 - [**ExifTool**](https://github.com/exiftool/exiftool) (EXIF info for photos and images)
 - [**fzf**](https://github.com/junegunn/fzf) (fzf is a general-purpose command-line fuzzy finder)
+- [**termshark**](https://github.com/gcla/termshark) (A terminal user-interface for tshark, inspired by Wireshark)
+- [**VisiData**](https://github.com/saulpw/visidata) (A terminal interface for exploring and arranging tsv, csv, sqlite, json, xlsx files)
