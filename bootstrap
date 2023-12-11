@@ -2,7 +2,7 @@
 
 ### By Andrii Kondratiev ###
 
-COMMON_PACKAGES="git zsh vim fzf curl wget tcpdump wireshark minicom neovim neofetch"
+COMMON_PACKAGES="git zsh vim fzf ncdu curl wget tcpdump wireshark minicom neovim neofetch"
 LINUX_PACKAGES="python3-pip mc"
 BREW_PACKAGES="midnight-commander ipython bpython"
 PYTHON_PACKAGES="thefuck ipython bpython"
@@ -56,8 +56,8 @@ function docker-install {
 		sudo chmod a+r /etc/apt/keyrings/docker.gpg
 	fi
 
-	if [[ $DISTRO = "Debian" ]]; then
-		### Script for Debian ###
+	if [[ $DISTRO = "Debian" ]] || [[ $DISTRO = "Ubuntu" ]]; then
+		### Script for Debian/Ubuntu ###
 		info "Check that docker repo exists..."
 		[ ! -f /etc/apt/sources.list.d/docker.list ] && \
 			info "Docker repo does not exists. Adding..."; \
